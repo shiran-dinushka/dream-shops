@@ -6,28 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Blob;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Image {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String filename;
-    private String fileType;
+    private String name;
 
-    @Lob
-    private Blob image;
-    private String downloadUrl;
-
-    @ManyToOne
-    @JoinColumn(name= "product_id")
-    private Product product;
-
-
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 }
