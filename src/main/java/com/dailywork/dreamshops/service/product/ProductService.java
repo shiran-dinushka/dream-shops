@@ -1,13 +1,19 @@
 package com.dailywork.dreamshops.service.product;
 
+import com.dailywork.dreamshops.dto.CategoryDto;
+import com.dailywork.dreamshops.dto.ImageDto;
+import com.dailywork.dreamshops.dto.ProductDto;
 import com.dailywork.dreamshops.exceptions.ResourceNotFoundException;
 import com.dailywork.dreamshops.model.Category;
+import com.dailywork.dreamshops.model.Image;
 import com.dailywork.dreamshops.model.Product;
 import com.dailywork.dreamshops.repository.CategoryRepository;
+import com.dailywork.dreamshops.repository.ImageRepository;
 import com.dailywork.dreamshops.repository.ProductRepository;
 import com.dailywork.dreamshops.request.AddProductRequest;
 import com.dailywork.dreamshops.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +25,9 @@ public class ProductService implements IProductService{
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageRepository imageRepository;
+    private final ModelMapper modelMapper;
+
     @Override
     public Product addProduct(AddProductRequest request) {
 
@@ -109,4 +118,22 @@ public class ProductService implements IProductService{
     public Long countProductsByBrandAndName(String brand, String name) {
         return productRepository.countByBrandAndName(brand,name);
     }
+
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products) {
+        return products.stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product) {
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        List<Image> images = imageRepository.findByProductId(product.getId());
+        List<ImageDto> imageDtos = images.stream()
+                .map(image -> modelMapper.map(image, ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
+    }
+
+
 }
