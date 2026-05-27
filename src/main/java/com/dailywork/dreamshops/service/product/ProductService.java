@@ -1,6 +1,5 @@
 package com.dailywork.dreamshops.service.product;
 
-import com.dailywork.dreamshops.dto.CategoryDto;
 import com.dailywork.dreamshops.dto.ImageDto;
 import com.dailywork.dreamshops.dto.ProductDto;
 import com.dailywork.dreamshops.exceptions.ResourceNotFoundException;
